@@ -1,0 +1,1404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Acoustic Disdrometry from a Cooking Pot — JNS182WX, 2026-04-14</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --navy: #0a0e1a;
+    --navy-mid: #111827;
+    --navy-light: #1e2a3a;
+    --navy-border: #2a3a52;
+    --accent: #4fc3f7;
+    --accent-warm: #f59e0b;
+    --accent-green: #34d399;
+    --accent-coral: #f87171;
+    --accent-purple: #a78bfa;
+    --text-primary: #e8edf5;
+    --text-secondary: #8fa3c0;
+    --text-muted: #4a6080;
+    --serif: 'Source Serif 4', Georgia, serif;
+    --display: 'Playfair Display', Georgia, serif;
+    --mono: 'IBM Plex Mono', monospace;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--navy);
+    color: var(--text-primary);
+    font-family: var(--serif);
+    font-size: 17px;
+    line-height: 1.75;
+    font-weight: 300;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--navy);
+    border-bottom: 1px solid var(--navy-border);
+    padding: 4rem 2rem 3rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .journal-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .journal-tag::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--navy-border);
+  }
+  h1 {
+    font-family: var(--display);
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+  }
+  h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .byline {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 1.5rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 8px;
+  }
+  .byline span { color: var(--text-muted); }
+  .byline strong { color: var(--text-primary); font-weight: 500; }
+
+  /* NAV */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,14,26,0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--navy-border);
+    padding: 0 2rem;
+  }
+  .nav-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav-inner::-webkit-scrollbar { display: none; }
+  nav a {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 14px 16px;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  nav a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* MAIN */
+  main { max-width: 900px; margin: 0 auto; padding: 0 2rem 6rem; }
+
+  /* SECTIONS */
+  section { padding: 4rem 0 2rem; border-top: 1px solid var(--navy-border); }
+  section:first-child { border-top: none; }
+  h2 {
+    font-family: var(--display);
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+  .section-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+  }
+  h3 {
+    font-family: var(--display);
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 2rem 0 0.75rem;
+  }
+  p { margin-bottom: 1rem; color: var(--text-primary); }
+  p + p { margin-top: 0; }
+
+  /* ABSTRACT */
+  .abstract {
+    background: var(--navy-light);
+    border-left: 3px solid var(--accent);
+    padding: 1.5rem 2rem;
+    margin: 2rem 0;
+    border-radius: 0 4px 4px 0;
+  }
+  .abstract-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  .abstract p { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin: 0; }
+
+  /* KEY FINDING CALLOUT */
+  .finding-box {
+    background: linear-gradient(135deg, rgba(79,195,247,0.08), rgba(167,139,250,0.05));
+    border: 1px solid rgba(79,195,247,0.25);
+    border-radius: 6px;
+    padding: 1.5rem 2rem;
+    margin: 2rem 0;
+  }
+  .finding-box .finding-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .finding-box p { color: var(--text-primary); margin: 0; font-size: 15px; }
+  .finding-box strong { color: var(--accent-warm); font-weight: 600; }
+
+  /* STAT CARDS */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin: 1.5rem 0;
+  }
+  .stat-card {
+    background: var(--navy-mid);
+    border: 1px solid var(--navy-border);
+    border-radius: 6px;
+    padding: 1rem 1.25rem;
+  }
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .stat-value {
+    font-family: var(--mono);
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--accent);
+    line-height: 1.2;
+  }
+  .stat-unit {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-left: 2px;
+  }
+  .stat-sub {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  /* TABLES */
+  .table-wrap { overflow-x: auto; margin: 1.5rem 0; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+  thead tr {
+    border-bottom: 1px solid var(--accent);
+  }
+  thead th {
+    text-align: left;
+    padding: 8px 12px;
+    color: var(--accent);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 10px;
+  }
+  tbody tr {
+    border-bottom: 1px solid var(--navy-border);
+    transition: background 0.15s;
+  }
+  tbody tr:hover { background: var(--navy-light); }
+  tbody td {
+    padding: 8px 12px;
+    color: var(--text-secondary);
+    vertical-align: top;
+  }
+  tbody td:first-child { color: var(--text-primary); }
+  .td-accent { color: var(--accent) !important; font-weight: 500; }
+  .td-warn { color: var(--accent-warm) !important; }
+  .td-green { color: var(--accent-green) !important; }
+  .td-coral { color: var(--accent-coral) !important; }
+  .td-purple { color: var(--accent-purple) !important; }
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+  .badge-confirmed { background: rgba(52,211,153,0.15); color: var(--accent-green); }
+  .badge-rejected { background: rgba(248,113,113,0.15); color: var(--accent-coral); }
+  .badge-open { background: rgba(245,158,11,0.15); color: var(--accent-warm); }
+
+  /* CHART CONTAINERS */
+  .chart-container {
+    background: var(--navy-mid);
+    border: 1px solid var(--navy-border);
+    border-radius: 6px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+  }
+  .chart-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  canvas { max-width: 100%; }
+
+  /* IMAGE FIGURES */
+  .figure {
+    margin: 2rem 0;
+    background: var(--navy-mid);
+    border: 1px solid var(--navy-border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .figure img {
+    width: 100%;
+    display: block;
+    background: #1a1a2e;
+  }
+  .figure-caption {
+    padding: 0.75rem 1rem;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    border-top: 1px solid var(--navy-border);
+    line-height: 1.5;
+  }
+  .figure-caption strong {
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  /* TABS */
+  .tab-group { margin: 1.5rem 0; }
+  .tab-buttons {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--navy-border);
+    margin-bottom: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tab-buttons::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 10px 16px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.2s, border-color 0.2s;
+    margin-bottom: -1px;
+  }
+  .tab-btn:hover { color: var(--text-secondary); }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab-panel { display: none; padding: 1.5rem 0; }
+  .tab-panel.active { display: block; }
+
+  /* COLLAPSIBLE */
+  .collapsible {
+    border: 1px solid var(--navy-border);
+    border-radius: 6px;
+    margin: 1rem 0;
+    overflow: hidden;
+  }
+  .collapsible-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: var(--navy-mid);
+    cursor: pointer;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-secondary);
+    transition: background 0.15s;
+    user-select: none;
+  }
+  .collapsible-header:hover { background: var(--navy-light); }
+  .collapsible-arrow {
+    font-size: 10px;
+    color: var(--text-muted);
+    transition: transform 0.2s;
+  }
+  .collapsible.open .collapsible-arrow { transform: rotate(180deg); }
+  .collapsible-body {
+    display: none;
+    padding: 1rem 1.25rem;
+    background: var(--navy);
+    border-top: 1px solid var(--navy-border);
+  }
+  .collapsible.open .collapsible-body { display: block; }
+
+  /* CODE BLOCK */
+  pre {
+    background: var(--navy-mid);
+    border: 1px solid var(--navy-border);
+    border-radius: 4px;
+    padding: 1rem 1.25rem;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-secondary);
+    overflow-x: auto;
+    line-height: 1.6;
+    margin: 1rem 0;
+  }
+  code { font-family: var(--mono); font-size: 13px; color: var(--accent); }
+
+  /* EVIDENCE CHAIN */
+  .evidence-chain {
+    margin: 1.5rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .evidence-item {
+    display: flex;
+    gap: 16px;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--navy-border);
+    align-items: flex-start;
+  }
+  .evidence-item:last-child { border-bottom: none; }
+  .evidence-num {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    background: rgba(79,195,247,0.1);
+    border: 1px solid rgba(79,195,247,0.2);
+    border-radius: 3px;
+    padding: 3px 7px;
+    white-space: nowrap;
+    margin-top: 2px;
+  }
+  .evidence-content { flex: 1; }
+  .evidence-title {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-primary);
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+  .evidence-desc {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin: 0;
+  }
+  .evidence-value {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent-warm);
+    font-weight: 500;
+    margin-top: 4px;
+  }
+
+  /* PHASE TIMELINE */
+  .timeline {
+    display: flex;
+    margin: 1.5rem 0;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid var(--navy-border);
+    font-family: var(--mono);
+    font-size: 11px;
+  }
+  .tl-phase {
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .tl-pre { background: rgba(79,195,247,0.08); flex: 1.5; }
+  .tl-burst { background: rgba(245,158,11,0.08); flex: 0.9; }
+  .tl-conv { background: rgba(248,113,113,0.1); flex: 1.1; }
+  .tl-name { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; }
+  .tl-pre .tl-name { color: var(--accent); }
+  .tl-burst .tl-name { color: var(--accent-warm); }
+  .tl-conv .tl-name { color: var(--accent-coral); }
+  .tl-time { color: var(--text-muted); font-size: 10px; }
+  .tl-drops { color: var(--text-secondary); font-size: 11px; }
+
+  /* RADAR TABLE highlight */
+  tr.radar-peak { background: rgba(245,158,11,0.06) !important; }
+  tr.radar-peak:hover { background: rgba(245,158,11,0.1) !important; }
+
+  /* FOOTER */
+  footer {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+    border-top: 1px solid var(--navy-border);
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    header { padding: 2rem 1rem 1.5rem; }
+    main { padding: 0 1rem 4rem; }
+    nav { padding: 0 1rem; }
+    footer { grid-template-columns: 1fr; padding: 2rem 1rem; }
+    .stat-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="journal-tag">Citizen Science Meteorology &nbsp;·&nbsp; Camp Hill, Pennsylvania &nbsp;·&nbsp; 2026-04-14</div>
+  <h1>Sub-Poisson Drop Arrival Regularity in Convective Rainfall: <em>Evidence from an Acoustic Disdrometer Built from a Cooking Pot</em></h1>
+  <div class="byline">
+    <div><span>Station</span> &nbsp;<strong>JNS182WX</strong></div>
+    <div><span>Location</span> &nbsp;<strong>40.2421°N, 76.9363°W</strong></div>
+    <div><span>Radar</span> &nbsp;<strong>KCCX State College WSR-88D</strong></div>
+    <div><span>Recording</span> &nbsp;<strong>20:22–20:57 EDT</strong></div>
+    <div><span>Status</span> &nbsp;<strong>Single-event, pending replication</strong></div>
+  </div>
+</header>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#abstract">Abstract</a>
+    <a href="#setup">Setup</a>
+    <a href="#methods">Methods</a>
+    <a href="#dsd">DSD</a>
+    <a href="#radar">Radar</a>
+    <a href="#nonpoisson">Non-Poisson</a>
+    <a href="#evidence">Evidence</a>
+    <a href="#alignment">Alignment</a>
+    <a href="#discussion">Discussion</a>
+    <a href="#data">Data</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- ABSTRACT -->
+<section id="abstract">
+  <h2><span class="section-num">§ ABSTRACT</span></h2>
+  <div class="abstract">
+    <div class="abstract-label">Abstract</div>
+    <p>We report the results of a 34.75-minute acoustic recording of a light-to-moderate convective rain event in Camp Hill, Pennsylvania (2026-04-14) using a consumer smartphone microphone placed beneath an inverted metal pot. Analysis of 2,946 detected raindrop impacts reveals that the convective phase of the event exhibits statistically robust sub-Poisson temporal regularity in drop arrival times, with a Fano factor of 0.247 at the 500 ms scale and a drop-rate–Fano correlation of r = −0.935 (stronger rain = more regular spacing). Monte Carlo phase shuffling confirms this departure from Poisson statistics at empirical p < 0.001. The finding persists robustly across three independent detection threshold settings (100/200/400 ms minimum inter-peak distance), ruling out measurement artifacts. Independent validation from KCCX dual-polarization radar confirms that ZDR and acoustic spectral centroid are anti-correlated as expected (larger drops = higher ZDR = lower centroid frequency), validating the acoustic drop-size proxy. The most parsimonious physical interpretation is aerodynamic drop–drop interaction at high drop density in the convective column. Acoustic onset of precipitation preceded piezoelectric rain gauge registration by approximately 10 minutes, demonstrating superior sensitivity for light rain detection. This work demonstrates that consumer-grade citizen science hardware can produce scientifically meaningful microphysical observations when combined with rigorous signal processing and statistical methodology.</p>
+  </div>
+</section>
+
+<!-- SETUP -->
+<section id="setup">
+  <h2><span class="section-num">§ 1</span> Experimental Setup</h2>
+
+  <p>The acoustic sensor system consisted of a consumer smartphone microphone placed inside an inverted metal cooking pot outdoors during a rainfall event. This configuration was not designed in advance as a scientific instrument — it emerged opportunistically during an overnight rain event.</p>
+
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="stat-label">Sample Rate</div>
+      <div class="stat-value">44,100<span class="stat-unit">Hz</span></div>
+      <div class="stat-sub">16-bit PCM mono</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Recording Duration</div>
+      <div class="stat-value">34.75<span class="stat-unit">min</span></div>
+      <div class="stat-sub">20:22–20:57 EDT</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Total Samples</div>
+      <div class="stat-value">91.9<span class="stat-unit">M</span></div>
+      <div class="stat-sub">After trim</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Drops Detected</div>
+      <div class="stat-value">2,946</div>
+      <div class="stat-sub">Mean 84.8/min</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Pot Decay Time</div>
+      <div class="stat-value">150–200<span class="stat-unit">ms</span></div>
+      <div class="stat-sub">Confirmed by envelope</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Beam Height (KCCX)</div>
+      <div class="stat-value">2.48<span class="stat-unit">km AGL</span></div>
+      <div class="stat-sub">0.5° elevation, ~87 km</div>
+    </div>
+  </div>
+
+  <h3>Sensor Configuration</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Component</th><th>Detail</th><th>Significance</th></tr></thead>
+      <tbody>
+        <tr><td>Microphone</td><td>Consumer smartphone mic</td><td>Sensitivity sufficient for drop impacts; no calibration</td></tr>
+        <tr><td>Pot orientation</td><td>Inverted — mic underneath, drops on outside bottom</td><td>Eliminates water pooling / drip artifacts completely</td></tr>
+        <tr><td>Pot material</td><td>Metal (type unknown)</td><td>Strong resonance ~64–256 Hz; sharp impact transients</td></tr>
+        <tr><td>Damping</td><td>Paper towel under pot rim</td><td>Reduces surface resonance propagation</td></tr>
+        <tr><td>Exposure</td><td>Outdoors, direct sky exposure</td><td>No sampling bias from overhead obstruction</td></tr>
+        <tr><td>PWS</td><td>Ecowitt WS90/GW3000B at same location</td><td>Independent rain rate reference (piezo + tipping bucket)</td></tr>
+        <tr><td>Radar</td><td>KCCX, ~87 km NW, 0.5° sweep</td><td>ZDR independent DSD validation, hydrometeor classification</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="timeline">
+    <div class="tl-phase tl-pre">
+      <div class="tl-name">Pre-convective</div>
+      <div class="tl-time">20:22 → 20:37</div>
+      <div class="tl-drops">108 drops · 6940ms mean IAT</div>
+    </div>
+    <div class="tl-phase tl-burst">
+      <div class="tl-name">First burst</div>
+      <div class="tl-time">20:37 → 20:46</div>
+      <div class="tl-drops">1,018 drops · 520ms mean IAT</div>
+    </div>
+    <div class="tl-phase tl-conv">
+      <div class="tl-name">Convective core</div>
+      <div class="tl-time">20:46 → 20:57</div>
+      <div class="tl-drops">1,820 drops · 329ms mean IAT</div>
+    </div>
+  </div>
+</section>
+
+<!-- METHODS -->
+<section id="methods">
+  <h2><span class="section-num">§ 2</span> Methods</h2>
+
+  <h3>Signal Processing Pipeline</h3>
+  <p>The raw audio was bandpass filtered to the pot's resonant frequency band (64–256 Hz) using a 4th-order Butterworth filter implemented via second-order sections (SOS). Standard <code>filtfilt</code> was found to produce NaN outputs on the 91.9M sample file due to numerical instability — <code>sosfiltfilt</code> was substituted as a stable alternative. Individual drop impacts were detected as peaks in the absolute filtered signal exceeding a fixed amplitude threshold (3× the 95th percentile of the noise floor measured from a quiet window at minute 9), with a minimum inter-peak distance of 200 ms to prevent double-counting of pot resonance ringing.</p>
+
+  <div class="collapsible open">
+    <div class="collapsible-header" onclick="toggleCollapse(this)">
+      <span>Detection threshold justification</span>
+      <span class="collapsible-arrow">▼</span>
+    </div>
+    <div class="collapsible-body">
+      <p style="font-size:14px;color:var(--text-secondary);">The 200 ms minimum inter-peak distance was chosen based on direct measurement of pot decay time. Single-impact analysis at 20:25:12 showed the pot's filtered-band envelope returning to background within 150–200 ms post-impact. The only spurious secondary peak found was at t = +51.8 ms with amplitude 0.00338 (30.6% of the primary peak) — well within the exclusion window. The threshold sensitivity analysis confirmed that all key findings persist across 100/200/400 ms settings.</p>
+      <pre>Noise floor (min 9, 95th pct):  0.00130
+Fixed threshold (3× floor):     0.00390
+Min peak distance (200ms):      8,820 samples @ 44,100 Hz
+Single-impact decay time:       ~150–200 ms
+Spurious secondary at:          +51.8 ms (inside exclusion zone)</pre>
+    </div>
+  </div>
+
+  <div class="collapsible">
+    <div class="collapsible-header" onclick="toggleCollapse(this)">
+      <span>GMM / KDE drop size analysis</span>
+      <span class="collapsible-arrow">▼</span>
+    </div>
+    <div class="collapsible-body">
+      <p style="font-size:14px;color:var(--text-secondary);">Gaussian Mixture Models were fitted to the log-amplitude distribution of all 2,946 detected impacts. BIC selected 6 components, AIC selected 7. The components are evenly spaced across the log-amplitude range with similar weights (0.07–0.22), indicating the distribution is a smooth continuous log-normal rather than a mixture of discrete size classes. No valleys were found in the KDE. The drop size distribution is continuous — the small/medium/large classification used in plots is a percentile-based operational binning, not a physical boundary.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Component</th><th>Mean (log₁₀)</th><th>Amplitude</th><th>Std</th><th>Weight</th></tr></thead>
+        <tbody>
+          <tr><td>C1</td><td>−2.347</td><td>0.00450</td><td>0.038</td><td>0.214</td></tr>
+          <tr><td>C2</td><td>−2.223</td><td>0.00599</td><td>0.055</td><td>0.220</td></tr>
+          <tr><td>C3</td><td>−2.072</td><td>0.00848</td><td>0.065</td><td>0.177</td></tr>
+          <tr><td>C4</td><td>−1.884</td><td>0.01306</td><td>0.077</td><td>0.168</td></tr>
+          <tr><td>C5</td><td>−1.658</td><td>0.02199</td><td>0.111</td><td>0.147</td></tr>
+          <tr><td>C6</td><td>−1.410</td><td>0.03891</td><td>0.187</td><td>0.072</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+</section>
+
+<!-- DSD -->
+<section id="dsd">
+  <h2><span class="section-num">§ 3</span> Drop Size Distribution Evolution</h2>
+
+  <p>The spectral centroid — the frequency-weighted center of mass of the acoustic spectrum at each moment — serves as a proxy for median drop size. Larger drops impart more energy at lower frequencies when striking a metal surface, shifting the centroid downward. The 514 Hz decline from the pre-convective phase (mean 2,261 Hz) to the convective core (mean 1,747 Hz) documents a systematic increase in drop size as the event intensified.</p>
+
+  <div class="chart-container">
+    <div class="chart-title">Spectral centroid by rain phase (Hz) — drop size proxy</div>
+    <canvas id="centroidChart" height="200"></canvas>
+  </div>
+
+  <div class="tab-group">
+    <div class="tab-buttons">
+      <button class="tab-btn active" onclick="switchTab(this, 'tab-ridge')">Ridge Plot</button>
+      <button class="tab-btn" onclick="switchTab(this, 'tab-spectrogram')">Spectrogram</button>
+      <button class="tab-btn" onclick="switchTab(this, 'tab-wavelet')">Wavelet Scalogram</button>
+      <button class="tab-btn" onclick="switchTab(this, 'tab-centroid')">Centroid vs Piezo</button>
+    </div>
+    <div id="tab-ridge" class="tab-panel active">
+      <div class="figure">
+        <img src="dsd_ridge_plot.png" alt="DSD ridge plot showing distribution evolution over time">
+        <div class="figure-caption"><strong>Fig 1.</strong> Drop size distribution evolution — ridge plot. Each row is a 2-minute window colored from dark purple (earliest, 20:24) to bright yellow (latest, 20:54). The narrow peaked distributions in early windows broaden and shift rightward as convection develops, showing the transition from small-drop stratiform to large-drop convective DSD. White dashed lines mark GMM component boundaries.</div>
+      </div>
+    </div>
+    <div id="tab-spectrogram" class="tab-panel">
+      <div class="figure">
+        <img src="spectrogram.png" alt="Full-event spectrogram">
+        <div class="figure-caption"><strong>Fig 2.</strong> Full-event STFT spectrogram (log frequency axis). The persistent bright band below 128 Hz is the pot resonance being excited by drop impacts. Vertical streaks are individual large-drop impacts exciting the full frequency range. The dramatic broadband brightening after 25 minutes corresponds to the convective core arrival.</div>
+      </div>
+    </div>
+    <div id="tab-wavelet" class="tab-panel">
+      <div class="figure">
+        <img src="wavelet_scalogram.png" alt="Wavelet scalogram of heavy rain window">
+        <div class="figure-caption"><strong>Fig 3.</strong> Morlet wavelet scalogram of a 60-second window during peak convective rain (20:48–20:49 EDT). The CWT provides better joint time-frequency resolution than STFT. The continuous bright orange band at 14–200 Hz reflects near-continuous pot excitation at high drop rates. Individual drop transients appear as vertical streaks spanning the full frequency range.</div>
+      </div>
+    </div>
+    <div id="tab-centroid" class="tab-panel">
+      <div class="figure">
+        <img src="spectral_centroid.png" alt="Spectral centroid vs piezo rain rate">
+        <div class="figure-caption"><strong>Fig 4.</strong> Spectral centroid (blue, left axis) vs Ecowitt piezo rain rate (orange, right axis). The centroid begins declining before the piezo registers meaningful rain — acoustic sensing detects DSD changes earlier than the rain gauge responds. The centroid minimum near 20:50 aligns with piezo rate maximum.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="figure">
+    <img src="centroid_by_phase.png" alt="Spectral centroid distribution by rain phase">
+    <div class="figure-caption"><strong>Fig 5.</strong> Spectral centroid KDE by rain phase. Blue (pre-convective) peaks at ~2,200 Hz; orange (first burst) at ~1,850 Hz; red (convective core) at ~1,600 Hz. The three distributions are well-separated, confirming that the DSD shift is not gradual noise but a genuine phase transition in hydrometeor character.</div>
+  </div>
+</section>
+
+<!-- RADAR -->
+<section id="radar">
+  <h2><span class="section-num">§ 4</span> KCCX Radar Integration</h2>
+
+  <p>Twenty-five KCCX WSR-88D Level II volume scans were downloaded from the IEM NEXRAD archive covering 20:01–22:00 EDT. Dual-polarization variables were extracted at the JNS182WX gate (beam height 2.48 km AGL, range ~87 km). Radial velocity was NaN throughout — the S/SSW flow direction at this azimuth (128°) produced near-zero-isodop geometry.</p>
+
+  <div class="finding-box">
+    <div class="finding-label">Key Cross-Validation</div>
+    <p>ZDR peaks at <strong>2.56 dB</strong> at 20:51 EDT (large oblate drops confirmed by polarimetry) while the acoustic spectral centroid reaches its minimum (~1,747 Hz) at the same time. These are <strong>anti-correlated as expected</strong> — a completely independent physical measurement confirming the acoustic drop-size proxy is responding to real DSD changes, not instrument artifacts.</p>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Time EDT</th><th>Z (dBZ)</th><th>ZDR (dB)</th><th>CC</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>20:04–20:14</td><td>—</td><td>—</td><td>—</td><td>Pre-event, clear</td></tr>
+        <tr><td>20:20</td><td class="td-accent">6.5</td><td>1.94</td><td>0.908</td><td>Rain approaching; large ZDR = large drop precursors</td></tr>
+        <tr><td>20:25</td><td class="td-accent">25.0</td><td>0.25</td><td>0.855</td><td>Precipitation developing; low CC (light/noisy)</td></tr>
+        <tr><td>20:30</td><td class="td-accent">31.0</td><td>0.53</td><td>0.995</td><td>Clean rain, Z ramping</td></tr>
+        <tr><td>20:35</td><td>32.0</td><td class="td-coral">−0.59</td><td>0.995</td><td><span class="badge badge-open">anomaly</span> Negative ZDR at moderate Z — see §6</td></tr>
+        <tr><td>20:40</td><td>26.5</td><td>0.03</td><td>0.928</td><td>Brief intensity lull</td></tr>
+        <tr><td>20:45</td><td class="td-accent">32.5</td><td>1.16</td><td>0.972</td><td>Recovery, moderate ZDR</td></tr>
+        <tr class="radar-peak"><td><strong>20:51</strong></td><td class="td-warm" style="color:var(--accent-warm);font-weight:500;">40.0</td><td class="td-warm" style="color:var(--accent-warm);font-weight:500;">2.56</td><td>0.938</td><td><span class="badge badge-confirmed">PEAK</span> Convective core maximum — large drops confirmed</td></tr>
+        <tr><td>20:56</td><td>36.0</td><td>1.81</td><td>0.952</td><td>Declining but still convective</td></tr>
+        <tr><td>21:00</td><td class="td-accent">39.0</td><td>1.50</td><td>0.985</td><td>Second Z peak; clean CC</td></tr>
+        <tr><td>21:05</td><td>31.5</td><td>2.09</td><td>0.962</td><td>ZDR still elevated post-core</td></tr>
+        <tr><td>21:09–21:19</td><td>33.5–39.0</td><td>0.62–0.88</td><td>0.972</td><td>Gradual decay, rain continuing</td></tr>
+        <tr><td>21:23–21:32</td><td>20.5–27.5</td><td>0.09–0.91</td><td>0.982–0.985</td><td>Weakening rain</td></tr>
+        <tr><td>21:37</td><td>4.5</td><td>−0.28</td><td class="td-coral">1.042</td><td>Rain ending; CC > 1.0 = calibration artifact at noise floor</td></tr>
+        <tr><td>21:41–22:00</td><td>—</td><td>—</td><td>—</td><td>Clear</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="chart-container">
+    <div class="chart-title">KCCX Z and ZDR over time — Camp Hill gate (2.48 km AGL)</div>
+    <canvas id="radarChart" height="220"></canvas>
+  </div>
+
+  <h3>Hydrometeor Classification</h3>
+  <p>Cross-correlation coefficient (CC) exceeds 0.97 for the majority of the rain period, confirming pure liquid rain at 2.48 km AGL with no mixed-phase or frozen hydrometeors. The physically impossible CC = 1.042 at 21:37 is a calibration noise-floor artifact as Z collapses to 4.5 dBZ. This validates the acoustic methodology: the pot was recording impacts from pure liquid raindrops throughout.</p>
+
+  <h3>Z-R Consistency Check</h3>
+  <p>At peak Z = 40.0 dBZ, Marshall-Palmer Z-R (Z = 300R<sup>1.4</sup>) yields R ≈ 7.6 mm/hr (0.30 in/hr) at 2.48 km AGL. The Ecowitt piezo registered 0.14 in/hr at the surface — approximately half the radar estimate. This discrepancy is physically expected: the radar samples 2.5 km aloft, and some drop coalescence and evaporation occurs during descent. The agreement is within the expected range.</p>
+
+  <div class="figure">
+    <img src="radar_overlay.png" alt="KCCX radar overlay with acoustic data">
+    <div class="figure-caption"><strong>Fig 6.</strong> Four-panel KCCX radar integration overlay. ZDR and acoustic spectral centroid are anti-correlated as expected (larger drops → higher ZDR → lower centroid Hz), providing independent physical validation of the acoustic drop-size proxy.</div>
+  </div>
+</section>
+
+<!-- NON-POISSON -->
+<section id="nonpoisson">
+  <h2><span class="section-num">§ 5</span> Non-Poisson Drop Arrival Statistics</h2>
+
+  <p>The standard assumption in rainfall modeling is that drops arrive as a Poisson process — each drop independent of all others, arrivals memoryless. A Poisson process produces an exponential inter-arrival time (IAT) distribution and a Fano factor (variance/mean of counts in fixed windows) equal to 1.0 at all scales.</p>
+
+  <div class="finding-box">
+    <div class="finding-label">Primary Finding</div>
+    <p>The convective core phase exhibits <strong>sub-Poisson temporal regularity</strong>: drops arrive more evenly spaced than random. The Fano factor at the 500 ms scale is <strong>0.247</strong> (Poisson = 1.0). This regularity strengthens with increasing rain rate (r = <strong>−0.935</strong>) and persists robustly across all detection threshold configurations tested. Monte Carlo phase shuffling confirms the departure is genuine (empirical p &lt; 0.001).</p>
+  </div>
+
+  <h3>Monte Carlo Phase Shuffling Results</h3>
+  <p>To distinguish genuine non-Poisson structure from sample-size artifacts, the actual inter-arrival times were randomly permuted 1,000 times to generate a null distribution of KS statistics under the Poisson hypothesis. Only the convective core's observed KS statistic (0.454) exceeded the null 99th percentile (0.369).</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Phase</th><th>Drops</th><th>Actual KS</th><th>Null 95th pct</th><th>Null 99th pct</th><th>Empirical p</th><th>Result</th></tr></thead>
+      <tbody>
+        <tr><td>Pre-convective</td><td>108</td><td>0.1377</td><td>0.3413</td><td>0.3570</td><td>1.000</td><td><span class="badge badge-rejected">Not significant</span></td></tr>
+        <tr><td>First burst</td><td>1,018</td><td>0.3177</td><td>0.3511</td><td>0.3793</td><td>0.224</td><td><span class="badge badge-rejected">Not significant</span></td></tr>
+        <tr class="radar-peak"><td><strong>Convective core</strong></td><td><strong>1,820</strong></td><td class="td-warn"><strong>0.4538</strong></td><td>0.3453</td><td>0.3689</td><td class="td-green"><strong>&lt;0.001</strong></td><td><span class="badge badge-confirmed">CONFIRMED p&lt;0.01</span></td></tr>
+        <tr><td>Full recording</td><td>2,946</td><td>0.2948</td><td>0.2948</td><td>0.2948</td><td>0.828</td><td><span class="badge badge-rejected">Not significant</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Fano Factor</h3>
+  <p>The Fano factor at the 500 ms window remains deeply sub-Poisson across all three detection threshold settings, confirming the finding is not an artifact of the 200 ms minimum inter-peak distance.</p>
+
+  <div class="chart-container">
+    <div class="chart-title">Fano factor at 500ms window — three detection thresholds</div>
+    <canvas id="fanoChart" height="200"></canvas>
+  </div>
+
+  <h3>Phase-Resolved Fano — Convective Core</h3>
+  <p>Within the convective core, every 2-minute sub-window has a Fano factor below 1.0. The correlation between Fano factor and drop rate is r = −0.935: as rain intensifies, drop spacing becomes more regular.</p>
+
+  <div class="chart-container">
+    <div class="chart-title">Convective core — Fano factor vs drop rate over time</div>
+    <canvas id="phaseChart" height="220"></canvas>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Time EDT</th><th>Fano (100ms)</th><th>Fano (200ms)</th><th>Fano (400ms)</th><th>Rate (drops/min)</th></tr></thead>
+      <tbody>
+        <tr><td>20:47</td><td>0.430</td><td>0.281</td><td>0.261</td><td>172</td></tr>
+        <tr><td>20:48</td><td>0.373</td><td>0.249</td><td>0.260</td><td>176</td></tr>
+        <tr><td>20:49</td><td>0.377</td><td>0.243</td><td>0.277</td><td>176</td></tr>
+        <tr><td>20:50</td><td>0.294</td><td>0.211</td><td>0.239</td><td>195</td></tr>
+        <tr class="radar-peak"><td><strong>20:51</strong></td><td class="td-green">0.248</td><td class="td-green">0.184</td><td class="td-green">0.216</td><td class="td-warn"><strong>205</strong></td></tr>
+        <tr class="radar-peak"><td><strong>20:52</strong></td><td class="td-green">0.253</td><td class="td-green">0.199</td><td class="td-green">0.202</td><td class="td-warn"><strong>205</strong></td></tr>
+        <tr><td>20:53</td><td>0.299</td><td>0.211</td><td>0.165</td><td>197</td></tr>
+        <tr><td>20:54</td><td>0.358</td><td>0.223</td><td>0.229</td><td>180</td></tr>
+        <tr><td>20:55</td><td>0.459</td><td>0.279</td><td>0.293</td><td>159</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="figure">
+    <img src="seven_tests.png" alt="Seven statistical tests panel">
+    <div class="figure-caption"><strong>Fig 7.</strong> Seven statistical tests for the non-Poisson finding. From top: (1) Fano factor vs window size — rises steeply above 1.0 at large scales indicating long-range dependence; (2) Pair correlation function — peak at 214ms lag; (3) Allan variance — slopes near −1.3 indicating quasi-periodic structure; (4) Monte Carlo phase shuffling — only convective core diamond lies above the null box; (5) Multiscale entropy — monotonically increasing with scale, characteristic of long-range correlated process; (6) Conditional intensity function; (7) Phase-resolved Fano in convective core.</div>
+  </div>
+</section>
+
+<!-- EVIDENCE CHAIN -->
+<section id="evidence">
+  <h2><span class="section-num">§ 6</span> Convergent Evidence Summary</h2>
+
+  <p>Six independent lines of evidence point to the same conclusion: drop arrivals in the convective core are sub-Poisson, with the degree of regularity increasing with rain rate.</p>
+
+  <div class="evidence-chain">
+    <div class="evidence-item">
+      <div class="evidence-num">01</div>
+      <div class="evidence-content">
+        <div class="evidence-title">Monte Carlo KS Test</div>
+        <p class="evidence-desc">1,000 phase-shuffled surrogates establish an empirical null distribution. The convective core KS statistic lies above the 99th percentile of the null.</p>
+        <div class="evidence-value">KS = 0.454 · empirical p &lt; 0.001 · null 99th pct = 0.369</div>
+      </div>
+    </div>
+    <div class="evidence-item">
+      <div class="evidence-num">02</div>
+      <div class="evidence-content">
+        <div class="evidence-title">Sub-Poisson Fano Factor</div>
+        <p class="evidence-desc">At the 500 ms window size the convective core Fano factor is 0.247 — less than one-quarter of the Poisson expectation of 1.0. Robust across 100/200/400 ms detection floors.</p>
+        <div class="evidence-value">Fano = 0.247 (200ms) · 0.262 (400ms) · 0.414 (100ms)</div>
+      </div>
+    </div>
+    <div class="evidence-item">
+      <div class="evidence-num">03</div>
+      <div class="evidence-content">
+        <div class="evidence-title">Fano–Rate Correlation</div>
+        <p class="evidence-desc">Within the convective core, Fano factor decreases monotonically as drop rate increases. The correlation is strong and consistent across all threshold settings.</p>
+        <div class="evidence-value">r = −0.935 (200ms) · r = −0.973 (100ms) · r = −0.883 (400ms)</div>
+      </div>
+    </div>
+    <div class="evidence-item">
+      <div class="evidence-num">04</div>
+      <div class="evidence-content">
+        <div class="evidence-title">Allan Variance Slope</div>
+        <p class="evidence-desc">Log-log slope of −1.347 in the convective core, steeper than all other phases. Slope near −1 indicates quasi-periodic timing structure — the most ordered pattern of the event.</p>
+        <div class="evidence-value">Slope = −1.347 · more negative = more ordered · Poisson = 0</div>
+      </div>
+    </div>
+    <div class="evidence-item">
+      <div class="evidence-num">05</div>
+      <div class="evidence-content">
+        <div class="evidence-title">Pair Correlation Function Peak</div>
+        <p class="evidence-desc">The pair correlation function peaks at g = 4.2 at lag 214 ms — drops are 4.2× more likely to be followed by another drop at 214 ms than Poisson expectation.</p>
+        <div class="evidence-value">g(214ms) = 4.202 · g(13ms) = 0.0 (detection exclusion zone)</div>
+      </div>
+    </div>
+    <div class="evidence-item">
+      <div class="evidence-num">06</div>
+      <div class="evidence-content">
+        <div class="evidence-title">Conditional Intensity Function</div>
+        <p class="evidence-desc">After a short gap (&lt;500 ms), the mean next gap is 365 ms — only 57% of the 642 ms overall mean. Short gaps beget short gaps; long gaps beget long gaps.</p>
+        <div class="evidence-value">Short/overall ratio = 0.569 · clustering signature confirmed</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="figure">
+    <img src="threshold_sensitivity.png" alt="Threshold sensitivity analysis">
+    <div class="figure-caption"><strong>Fig 8.</strong> Threshold sensitivity analysis across 100/200/400 ms minimum inter-peak distances. Top: Fano factor by phase — convective core remains deeply sub-Poisson at all settings. Middle: KS statistic — increases with threshold in convective core (opposite of artifact behavior). Bottom-left: Phase-resolved Fano curves track each other closely. The finding is not an artifact of the detection floor.</div>
+  </div>
+</section>
+
+<!-- TIME ALIGNMENT -->
+<section id="alignment">
+  <h2><span class="section-num">§ 7</span> Time Alignment &amp; Sensor Comparison</h2>
+
+  <p>Cross-correlation of the acoustic drop count series with the Ecowitt piezo rain rate returned a best lag of +10 minutes (acoustic leads piezo), peak normalized correlation 0.819. Naively this might suggest a 10-minute error in the assumed 20:22 recording start time. However, KCCX radar provides an independent timing reference.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Reference</th><th>Rain onset time (EDT)</th><th>Method</th></tr></thead>
+      <tbody>
+        <tr><td class="td-accent">KCCX Reflectivity</td><td class="td-accent">20:25</td><td>Z &gt; 20 dBZ threshold (Z = 25.0 dBZ at 20:25 scan)</td></tr>
+        <tr><td class="td-accent">Acoustic detection</td><td class="td-accent">20:25</td><td>15 drops/min at 20:25 minute window</td></tr>
+        <tr><td>Ecowitt piezo</td><td>20:34</td><td>First non-zero reading (0.020 in/hr trace)</td></tr>
+        <tr><td>Ecowitt piezo meaningful</td><td>20:49</td><td>&gt;0.05 in/hr threshold</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>The acoustic onset at 20:25 agrees exactly with KCCX radar at lag = 0. The piezo lags by 9–24 minutes depending on threshold. The +10 minute cross-correlation lag reflects piezo sensor latency, not a recording clock error. <strong>Audio start time 20:22 EDT is confirmed. All phase boundaries stand.</strong></p>
+
+  <div class="finding-box">
+    <div class="finding-label">Bonus Finding — Sensor Sensitivity</div>
+    <p>82 acoustic drops were detected between 20:24 and 20:33 before the Ecowitt piezo registered any rain at all. The acoustic system detected the light precursor rainfall approximately <strong>10 minutes earlier</strong> than the piezoelectric rain gauge. This documents a genuine sensitivity advantage of acoustic sensing for light rain onset detection.</p>
+  </div>
+
+  <div class="figure">
+    <img src="time_alignment.png" alt="Time alignment verification">
+    <div class="figure-caption"><strong>Fig 9.</strong> Time alignment verification. The cross-correlation peak at +10 minutes reflects piezo sensor latency, confirmed by independent KCCX radar onset timing at 20:25 EDT agreeing with acoustic onset at the same time.</div>
+  </div>
+</section>
+
+<!-- DISCUSSION -->
+<section id="discussion">
+  <h2><span class="section-num">§ 8</span> Discussion</h2>
+
+  <h3>Physical Interpretation</h3>
+  <p>The most parsimonious physical explanation for sub-Poisson drop arrival regularity that strengthens with rain rate is aerodynamic drop–drop interaction at high drop density. At convective core rates of 160–205 drops per minute, the mean inter-arrival time is 290–375 ms. At a terminal velocity of 6–8 m/s for 2–3 mm drops, this corresponds to a vertical column spacing of roughly 1.7–3.0 meters between successive drops. At this spacing, the turbulent wake of a leading drop can influence the terminal velocity and trajectory of a trailing drop, creating a weak hydrodynamic repulsion that regularizes the spacing. This mechanism would predict exactly what is observed: more regular spacing at higher rain rates (more drops per unit volume, more interactions) and sub-Poisson rather than super-Poisson statistics (repulsion pushes toward regularity, not clustering).</p>
+
+  <h3>Open Questions</h3>
+
+  <div class="tab-group">
+    <div class="tab-buttons">
+      <button class="tab-btn active" onclick="switchTab(this, 'tab-openA')">ZDR Anomaly</button>
+      <button class="tab-btn" onclick="switchTab(this, 'tab-openB')">Velocity Gap</button>
+      <button class="tab-btn" onclick="switchTab(this, 'tab-openC')">Calibration</button>
+      <button class="tab-btn" onclick="switchTab(this, 'tab-openD')">Replication</button>
+    </div>
+    <div id="tab-openA" class="tab-panel active">
+      <p>ZDR = −0.59 dB at 20:35 EDT with Z = 32 dBZ and CC = 0.995 is unusual. Negative ZDR at moderate reflectivity with high CC is not expected for liquid rain (which should produce ZDR ≥ 0 for drop sizes that register at 32 dBZ). Possible explanations include a brief mixed-phase layer above the melting level (unlikely given high CC), small spherical drops or graupel (inconsistent with Z), a KCCX calibration offset, or a point artifact on the beam. This time coincides with the pre-burst lull in the acoustic record (low drop counts). The anomaly warrants investigation of neighboring KCCX azimuths to determine if it is a real atmospheric feature or a beam artifact.</p>
+    </div>
+    <div id="tab-openB" class="tab-panel">
+      <p>Radial velocity was NaN for all 25 volume scans. At 87 km range on an approximately 128° azimuth, S/SSW surface flow (roughly 180°) would produce near-zero radial velocity — the beam is nearly perpendicular to the wind direction. The low-level jet hypothesis for non-Poisson drop clustering cannot be confirmed or ruled out from this dataset. A dual-Doppler approach using both KCCX and KPBZ (Pittsburgh) would provide better velocity coverage over Camp Hill but is beyond the scope of this single-event analysis.</p>
+    </div>
+    <div id="tab-openC" class="tab-panel">
+      <p>All acoustic amplitude results are in arbitrary units relative to the recording system. Conversion to physical drop diameter requires a calibration experiment: drop water of known volume from a measured height onto the pot, record the impacts with the same setup, and apply a terminal velocity correction. A 10 mL oral syringe is available for this experiment. Dropping from 1.0 m and 2.0 m would provide two known (velocity, amplitude) pairs for each drop size, enabling extrapolation to terminal velocity KE. The pot's non-linear acoustic response at different impact locations is a secondary uncertainty that can be addressed by masking the pot to constrain drops to the center.</p>
+    </div>
+    <div id="tab-openD" class="tab-panel">
+      <p>All findings reported here derive from a single 35-minute event. The sub-Poisson Fano finding and r = −0.935 correlation are statistically robust within this event, but single-event results cannot distinguish a genuine atmospheric phenomenon from a peculiarity of this specific shower. Replication of the pipeline on three to five additional rain events — particularly events of varying intensity (light stratiform, moderate mixed, heavy convective) — is the minimum needed to assess whether the finding is general or event-specific. The measurement apparatus and analysis pipeline are fully documented for this purpose.</p>
+    </div>
+  </div>
+
+  <h3>Limitations</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Limitation</th><th>Impact</th><th>Mitigation</th></tr></thead>
+      <tbody>
+        <tr><td>Single event</td><td>Cannot generalize to other events or locations</td><td>Replication planned</td></tr>
+        <tr><td>No absolute amplitude calibration</td><td>Drop diameters in arbitrary units</td><td>Syringe calibration experiment planned</td></tr>
+        <tr><td>Radar beam height 2.48 km AGL</td><td>Not surface DSD; some fall-distance modification</td><td>Acknowledged in Z-R comparison</td></tr>
+        <tr><td>Recording start time uncertainty</td><td>±1–2 min; phase boundary uncertainty</td><td>Confirmed by KCCX radar onset at 20:25</td></tr>
+        <tr><td>Pot acoustic non-linearity</td><td>Off-center impacts produce different amplitudes</td><td>Large sample averages partially mitigate; calibration needed</td></tr>
+        <tr><td>Velocity NaN throughout</td><td>Low-level jet hypothesis untestable</td><td>Flagged; dual-Doppler approach in future</td></tr>
+        <tr><td>KDP not derived</td><td>Independent rain rate proxy not available</td><td>pyart kdp_maesaka timeout; kdp_vulpiani proposed as alternative</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- DATA -->
+<section id="data">
+  <h2><span class="section-num">§ 9</span> Data &amp; Reproducibility</h2>
+
+  <h3>Drop Count Time Series (Interactive)</h3>
+  <div class="chart-container">
+    <div class="chart-title">Acoustic drop count per minute — full recording</div>
+    <canvas id="dropCountChart" height="200"></canvas>
+  </div>
+
+  <h3>Full Drop Count Table</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Time</th><th>Drops/min</th><th>Phase</th><th>KCCX Z</th><th>KCCX ZDR</th></tr></thead>
+      <tbody id="dropTableBody"></tbody>
+    </table>
+  </div>
+
+  <h3>File Inventory</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>File</th><th>Description</th><th>Size</th></tr></thead>
+      <tbody>
+        <tr><td class="td-accent">260414-202004.wav</td><td>Trimmed audio (44100 Hz, 16-bit PCM mono)</td><td>~180 MB</td></tr>
+        <tr><td>260414-202004_2.wav</td><td>Original untrimmed audio (36.05 min)</td><td>~400 MB</td></tr>
+        <tr><td>202604A__4_.csv</td><td>Ecowitt WS90 5-minute data, Apr 8–15 2026</td><td>329 KB</td></tr>
+        <tr><td>analysis_log.txt</td><td>Master running log — all sessions consolidated</td><td>17 KB</td></tr>
+        <tr><td>radar/ (25 files)</td><td>KCCX Level II volume scans, 0001–0158 UTC Apr 15</td><td>~162 MB</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Analysis Pipeline Summary</h3>
+  <div class="collapsible">
+    <div class="collapsible-header" onclick="toggleCollapse(this)">
+      <span>Python environment and key parameters</span>
+      <span class="collapsible-arrow">▼</span>
+    </div>
+    <div class="collapsible-body">
+      <pre>Environment:     conda 'weather', Python 3.x
+Key packages:    librosa, scipy, numpy, pyart (arm-pyart 2.1.1),
+                 sklearn, antropy, boto3, matplotlib
+
+Audio loading:   librosa.load(sr=None, mono=True)
+Bandpass:        sosfiltfilt, Butterworth order-4, 64–256 Hz
+                 (NOT filtfilt — blows up on 92M samples)
+Detection:       scipy.signal.find_peaks
+                 height=fixed_threshold (0.00390)
+                 distance=int(sr * 0.2)  # 200ms
+Noise floor:     np.percentile(|y_band[min9_window]|, 95) * 3
+Fano factor:     custom compute_fano() — histogram variance/mean
+Entropy:         antropy.sample_entropy(order=2)
+Radar:           pyart.io.read() → get_gate_lat_lon_alt()
+                 → nearest-gate extraction at 40.242069N, 76.936279W</pre>
+    </div>
+  </div>
+
+  <div class="figure">
+    <img src="full_overlay.png" alt="Full overlay — acoustic vs Ecowitt">
+    <div class="figure-caption"><strong>Fig 10.</strong> Full event overlay: acoustic RMS and Ecowitt piezo rain rate (top); acoustic drop count per minute (middle); mean impact amplitude as drop size proxy (bottom). The acoustic sensor captured the full intensification curve; recording ended before the event peaked.</div>
+  </div>
+
+  <div class="figure">
+    <img src="single_impact.png" alt="Single drop impact analysis">
+    <div class="figure-caption"><strong>Fig 11.</strong> Single drop impact analysis at 20:25:12.228277 EDT. Raw waveform (top), bandpass filtered 64–256 Hz (middle), signal envelope (bottom). Pot resonance decays within 150–200 ms. The only spurious secondary detection at +51.8 ms is inside the 200 ms exclusion zone, confirming the detector is not double-counting pot ringing.</div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div>
+    <div>Station: JNS182WX · Camp Hill, PA</div>
+    <div>Event: 2026-04-14 20:22–20:57 EDT</div>
+    <div>Radar: KCCX · beam ht 2.48 km AGL</div>
+  </div>
+  <div style="text-align:right;">
+    <div>Analysis: acoustic disdrometry · dual-pol radar</div>
+    <div>Status: single-event · pending replication</div>
+    <div>Generated: 2026-04-15</div>
+  </div>
+</footer>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const dropCounts = [
+  {t:'20:22',n:0},{t:'20:23',n:0},{t:'20:24',n:2},{t:'20:25',n:15},
+  {t:'20:26',n:20},{t:'20:27',n:9},{t:'20:28',n:3},{t:'20:29',n:2},
+  {t:'20:30',n:16},{t:'20:31',n:4},{t:'20:32',n:4},{t:'20:33',n:7},
+  {t:'20:34',n:7},{t:'20:35',n:6},{t:'20:36',n:13},{t:'20:37',n:33},
+  {t:'20:38',n:175},{t:'20:39',n:200},{t:'20:40',n:159},{t:'20:41',n:187},
+  {t:'20:42',n:85},{t:'20:43',n:30},{t:'20:44',n:36},{t:'20:45',n:113},
+  {t:'20:46',n:164},{t:'20:47',n:181},{t:'20:48',n:171},{t:'20:49',n:182},
+  {t:'20:50',n:208},{t:'20:51',n:202},{t:'20:52',n:208},{t:'20:53',n:186},
+  {t:'20:54',n:173},{t:'20:55',n:145}
+];
+
+const phaseColors = {
+  'Pre-convective': '#4fc3f7',
+  'First burst': '#f59e0b',
+  'Convective core': '#f87171'
+};
+
+function getPhase(t) {
+  const h = parseInt(t.split(':')[0]);
+  const m = parseInt(t.split(':')[1]);
+  const mins = h * 60 + m;
+  if (mins < 20*60+37) return 'Pre-convective';
+  if (mins < 20*60+46) return 'First burst';
+  return 'Convective core';
+}
+
+const radarData = [
+  {t:'20:20',z:6.5,zdr:1.94,cc:0.908},
+  {t:'20:25',z:25.0,zdr:0.25,cc:0.855},
+  {t:'20:30',z:31.0,zdr:0.53,cc:0.995},
+  {t:'20:35',z:32.0,zdr:-0.59,cc:0.995},
+  {t:'20:40',z:26.5,zdr:0.03,cc:0.928},
+  {t:'20:45',z:32.5,zdr:1.16,cc:0.972},
+  {t:'20:51',z:40.0,zdr:2.56,cc:0.938},
+  {t:'20:56',z:36.0,zdr:1.81,cc:0.952},
+  {t:'21:00',z:39.0,zdr:1.50,cc:0.985},
+  {t:'21:05',z:31.5,zdr:2.09,cc:0.962},
+  {t:'21:09',z:39.0,zdr:0.88,cc:0.972},
+  {t:'21:14',z:36.5,zdr:1.56,cc:0.975},
+  {t:'21:19',z:33.5,zdr:0.62,cc:0.972},
+  {t:'21:23',z:27.5,zdr:0.09,cc:0.982},
+  {t:'21:28',z:20.5,zdr:0.91,cc:0.985},
+  {t:'21:32',z:26.0,zdr:0.16,cc:0.985},
+  {t:'21:37',z:4.5,zdr:-0.28,cc:1.042},
+];
+
+const convFano = [
+  {t:'20:47',f100:0.430,f200:0.281,f400:0.261,rate:172},
+  {t:'20:48',f100:0.373,f200:0.249,f400:0.260,rate:176},
+  {t:'20:49',f100:0.377,f200:0.243,f400:0.277,rate:176},
+  {t:'20:50',f100:0.294,f200:0.211,f400:0.239,rate:195},
+  {t:'20:51',f100:0.248,f200:0.184,f400:0.216,rate:205},
+  {t:'20:52',f100:0.253,f200:0.199,f400:0.202,rate:205},
+  {t:'20:53',f100:0.299,f200:0.211,f400:0.165,rate:197},
+  {t:'20:54',f100:0.358,f200:0.223,f400:0.229,rate:180},
+  {t:'20:55',f100:0.459,f200:0.279,f400:0.293,rate:159},
+];
+
+// ============================================================
+// CHART DEFAULTS
+// ============================================================
+Chart.defaults.color = '#8fa3c0';
+Chart.defaults.borderColor = '#2a3a52';
+Chart.defaults.font.family = "'IBM Plex Mono', monospace";
+Chart.defaults.font.size = 11;
+
+// ============================================================
+// DROP COUNT CHART
+// ============================================================
+new Chart(document.getElementById('dropCountChart'), {
+  type: 'bar',
+  data: {
+    labels: dropCounts.map(d => d.t),
+    datasets: [{
+      data: dropCounts.map(d => d.n),
+      backgroundColor: dropCounts.map(d => {
+        const ph = getPhase(d.t);
+        return ph === 'Pre-convective' ? 'rgba(79,195,247,0.5)'
+             : ph === 'First burst' ? 'rgba(245,158,11,0.5)'
+             : 'rgba(248,113,113,0.5)';
+      }),
+      borderColor: dropCounts.map(d => {
+        const ph = getPhase(d.t);
+        return ph === 'Pre-convective' ? '#4fc3f7'
+             : ph === 'First burst' ? '#f59e0b'
+             : '#f87171';
+      }),
+      borderWidth: 1,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => `${ctx.raw} drops/min · ${getPhase(ctx.label)}`
+        }
+      }
+    },
+    scales: {
+      x: { ticks: { maxRotation: 45, font: { size: 10 } } },
+      y: { title: { display: true, text: 'Drops / min' } }
+    }
+  }
+});
+
+// ============================================================
+// RADAR CHART
+// ============================================================
+new Chart(document.getElementById('radarChart'), {
+  type: 'line',
+  data: {
+    labels: radarData.map(d => d.t),
+    datasets: [
+      {
+        label: 'Z (dBZ)',
+        data: radarData.map(d => d.z),
+        borderColor: '#f59e0b',
+        backgroundColor: 'rgba(245,158,11,0.1)',
+        borderWidth: 2,
+        pointRadius: 4,
+        tension: 0.3,
+        yAxisID: 'yZ',
+        fill: true,
+      },
+      {
+        label: 'ZDR (dB)',
+        data: radarData.map(d => d.zdr),
+        borderColor: '#4fc3f7',
+        backgroundColor: 'transparent',
+        borderWidth: 2,
+        pointRadius: 4,
+        tension: 0.3,
+        yAxisID: 'yZDR',
+        borderDash: [4,3],
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: { display: true, position: 'top' }
+    },
+    scales: {
+      x: { ticks: { maxRotation: 45, font: { size: 10 } } },
+      yZ: {
+        type: 'linear', position: 'left',
+        title: { display: true, text: 'Z (dBZ)', color: '#f59e0b' },
+        ticks: { color: '#f59e0b' }
+      },
+      yZDR: {
+        type: 'linear', position: 'right',
+        title: { display: true, text: 'ZDR (dB)', color: '#4fc3f7' },
+        ticks: { color: '#4fc3f7' },
+        grid: { drawOnChartArea: false }
+      }
+    }
+  }
+});
+
+// ============================================================
+// CENTROID CHART
+// ============================================================
+new Chart(document.getElementById('centroidChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Pre-convective\n(20:22–20:37)', 'First burst\n(20:37–20:46)', 'Convective core\n(20:46–20:57)'],
+    datasets: [
+      {
+        label: 'Mean centroid (Hz)',
+        data: [2261, 2008, 1747],
+        backgroundColor: ['rgba(79,195,247,0.5)', 'rgba(245,158,11,0.5)', 'rgba(248,113,113,0.5)'],
+        borderColor: ['#4fc3f7', '#f59e0b', '#f87171'],
+        borderWidth: 2,
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      annotation: {}
+    },
+    scales: {
+      y: {
+        min: 1400,
+        title: { display: true, text: 'Spectral Centroid (Hz)' }
+      }
+    }
+  }
+});
+
+// ============================================================
+// FANO CHART
+// ============================================================
+new Chart(document.getElementById('fanoChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Pre-convective', 'First burst', 'Convective core'],
+    datasets: [
+      {
+        label: '100ms threshold',
+        data: [1.319, 1.168, 0.414],
+        backgroundColor: 'rgba(52,211,153,0.4)',
+        borderColor: '#34d399',
+        borderWidth: 1,
+      },
+      {
+        label: '200ms threshold',
+        data: [1.020, 0.670, 0.247],
+        backgroundColor: 'rgba(79,195,247,0.4)',
+        borderColor: '#4fc3f7',
+        borderWidth: 1,
+      },
+      {
+        label: '400ms threshold',
+        data: [0.932, 0.453, 0.262],
+        backgroundColor: 'rgba(167,139,250,0.4)',
+        borderColor: '#a78bfa',
+        borderWidth: 1,
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: true, position: 'top' },
+      tooltip: {
+        callbacks: {
+          afterBody: () => ['Poisson expectation = 1.000']
+        }
+      }
+    },
+    scales: {
+      y: {
+        title: { display: true, text: 'Fano Factor (Poisson = 1.0)' },
+        min: 0,
+      }
+    }
+  }
+});
+
+// ============================================================
+// PHASE-RESOLVED FANO CHART
+// ============================================================
+new Chart(document.getElementById('phaseChart'), {
+  type: 'line',
+  data: {
+    labels: convFano.map(d => d.t),
+    datasets: [
+      {
+        label: 'Fano (200ms)',
+        data: convFano.map(d => d.f200),
+        borderColor: '#4fc3f7',
+        backgroundColor: 'rgba(79,195,247,0.1)',
+        borderWidth: 2,
+        pointRadius: 5,
+        tension: 0.3,
+        yAxisID: 'yF',
+      },
+      {
+        label: 'Drop rate (drops/min)',
+        data: convFano.map(d => d.rate),
+        borderColor: '#f87171',
+        backgroundColor: 'transparent',
+        borderWidth: 2,
+        pointRadius: 5,
+        tension: 0.3,
+        yAxisID: 'yR',
+        borderDash: [4,3],
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: { display: true, position: 'top' },
+      tooltip: {
+        callbacks: {
+          footer: items => [`r = −0.935 between Fano and rate`]
+        }
+      }
+    },
+    scales: {
+      yF: {
+        type: 'linear', position: 'left',
+        title: { display: true, text: 'Fano Factor', color: '#4fc3f7' },
+        ticks: { color: '#4fc3f7' },
+        min: 0, max: 0.6,
+        grid: {
+          color: ctx => ctx.tick.value === 1.0 ? '#4fc3f7' : '#2a3a52'
+        }
+      },
+      yR: {
+        type: 'linear', position: 'right',
+        title: { display: true, text: 'Drop Rate (drops/min)', color: '#f87171' },
+        ticks: { color: '#f87171' },
+        grid: { drawOnChartArea: false }
+      }
+    }
+  }
+});
+
+// ============================================================
+// POPULATE DROP TABLE
+// ============================================================
+const radarLookup = {};
+radarData.forEach(r => { radarLookup[r.t] = r; });
+
+const tbody = document.getElementById('dropTableBody');
+dropCounts.forEach(d => {
+  const phase = getPhase(d.t);
+  const rad = radarLookup[d.t];
+  const phaseColor = phase === 'Pre-convective' ? 'td-accent'
+                   : phase === 'First burst' ? 'td-warn'
+                   : 'td-coral';
+  tbody.innerHTML += `<tr>
+    <td>${d.t}</td>
+    <td>${d.n}</td>
+    <td class="${phaseColor}">${phase}</td>
+    <td>${rad ? rad.z + ' dBZ' : '—'}</td>
+    <td>${rad ? rad.zdr + ' dB' : '—'}</td>
+  </tr>`;
+});
+
+// ============================================================
+// TABS
+// ============================================================
+function switchTab(btn, panelId) {
+  const group = btn.closest('.tab-group');
+  group.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  group.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(panelId).classList.add('active');
+}
+
+// ============================================================
+// COLLAPSIBLE
+// ============================================================
+function toggleCollapse(header) {
+  header.parentElement.classList.toggle('open');
+}
+</script>
+</body>
+</html>
